@@ -1,0 +1,59 @@
+version: "2"
+
+services:
+
+  redis:
+    image: centos/redis-32-centos7
+
+    container_name: redis
+    ports:
+      - "6379:6379"
+    user: "123123"
+
+  flower:
+    image: mher/flower
+    container_name: flower
+    ports:
+     - "5555:5555"
+    depends_on:
+     - redis
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+    user: "123123"
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+    ports:
+    - 8081:8081
+    user: "123123"
+
+  example-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.example
+    image: frambo-example-bot
+    restart: always
+    depends_on:
+     - redis
+    environment:
+      # Used in celery_app.py to tell celery where's redis instance
+      REDIS_SERVICE_HOST: redis
+      # Used in tasks.sh to tell celery in which python module is our worker.
+      # You can also specify whole package, (i.e. 'APP: foobar'), but then you would need to specify 'include' param when calling celery_app()
+      APP: foobar.tasks
+      # Used in tasks.sh to tell celery on which queue this worker listens.
+      # To see what tasks go to which queue see task_routes in producer.py
+      WORKER_QUEUES: queue.foobar
+      DEPLOYMENT: test
+    volumes:
+    # So we don't have to rebuild the image with every tiny change
+     - ./frambo/:/usr/local/lib/python3.6/site-packages/frambo/:ro,Z
+     - ./examples/bot/foobar/:/usr/local/lib/python3.6/site-packages/foobar/:ro,Z
+     - ./examples/bot/tasks.sh:/usr/bin/tasks.sh:ro,Z
+    user: "123123"

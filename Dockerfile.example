@@ -1,0 +1,10 @@
+# This is here just for the example implementation of bot, see examples/bot/ dir.
+
+FROM docker.io/usercont/frambo
+
+# Install example bot
+COPY ./examples/bot /tmp/example-bot/
+RUN cd /tmp/example-bot && pip3 install .
+
+COPY ./examples/bot/tasks.sh /usr/bin/
+CMD ["/usr/bin/tasks.sh"]

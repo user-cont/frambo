@@ -1,0 +1,9 @@
+anymarkup
+redis
+celery[eventlet,gevent]
+jinja2
+jsonschema
+pyyaml
+python-qpid-proton
+raven
+requests

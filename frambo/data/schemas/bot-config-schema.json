@@ -1,0 +1,91 @@
+{
+  "$id": "https://github.com/user-cont/frambo/schema/bot-configuration-schema.json",
+  "type": "object",
+  "definitions": {
+    "notifications": {
+      "$id": "/definitions/notifications",
+      "type": "object",
+      "properties": {
+        "email_addresses": {
+          "$id": "/definitions/notifications/properties/email_addresses",
+          "type": "array",
+          "items": {
+            "$id": "/definitions/notifications/properties/email_addresses/items",
+            "type": "string",
+            "format": "email",
+            "title": "Notification_email",
+            "description": "email notification receiver",
+            "default": "",
+            "examples": [
+              "dhodovsk@redhat.com",
+              "jozko@mrkvicka.com"
+            ]
+          }
+        },
+        "irc": {
+          "$id": "/definitions/notifications/properties/irc",
+          "type": "array",
+          "items": {
+            "$id": "/definitions/notifications/properties/irc/items",
+            "type": "string",
+            "title": "IRC receiver",
+            "description": "IRC notification receiver",
+            "default": "",
+            "examples": [
+              "#sth",
+              "#sthelse"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "$schema": "https://github.com/user-cont/frambo/schema/bot-configuration-schema.json",
+  "required": [
+    "version"
+  ],
+  "properties": {
+    "version": {
+      "$id": "/properties/version",
+      "type": "string",
+      "title": "The Version Schema ",
+      "description": "Version of bot configuration document",
+      "default": "",
+      "examples": [
+        "1",
+        "2.1"
+      ]
+    },
+    "global": {
+      "$id": "/properties/global",
+      "type": "object",
+      "properties": {
+        "notifications": {
+          "$ref": "#/definitions/notifications"
+        }
+      }
+    },
+    "zdravomil": {
+      "$id": "/properties/zdravomil",
+      "type": "object",
+      "description": "Configuration for Zdravomil bot - https://github.com/user-cont/zdravomil",
+      "required": [
+        "enabled"
+      ],
+      "properties": {
+        "enabled": {
+          "$id": "/properties/zdravomil/properties/enabled",
+          "type": "boolean",
+          "title": "Zdravomil enabled",
+          "default": false,
+          "examples": [
+            true
+          ]
+        },
+        "notifications": {
+          "$ref": "#/definitions/notifications"
+        }
+      }
+    }
+  }
+}

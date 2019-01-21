@@ -1,0 +1,8 @@
+FROM docker.io/usercont/frambo
+
+RUN cd /tmp/frambo && \
+    pip3 install -r tests/requirements.txt
+
+WORKDIR /tmp/frambo
+
+CMD ["make","test"]

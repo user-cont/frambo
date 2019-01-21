@@ -1,0 +1,48 @@
+# Document version
+version: "1"
+
+# Configuration shared by all bots.
+# The fields can be overriden in the bot configuration - see below
+global:
+  notifications:
+    email_addresses: ["dhodovsk@redhat.com"]
+
+# Scanning Dockerfiles for issues
+# https://github.com/user-cont/zdravomil
+dockerfile-linter:
+  # (Optional) Enable this bot? Defaults to true
+  enabled: true
+
+  # Zdravomil automatically reports results as flags in pull requests
+  # Here you can specify additional reporting
+  # This field overrides global notifications configuration
+  # optional
+  notifications:
+    email_addresses: ["jozko@mrkvicka.com"]
+
+# Synchronizing changes from upstream to downstream repository
+# https://github.com/user-cont/betka
+upstream-to-downstream:
+  # (Optional) Enable this bot? Defaults to false
+  enabled: true
+  # Send email once a sync is done
+  notifications:
+    email_addresses: ["user-cont-team@redhat.com"]
+
+# In case you want to sync only what's in upstream branch, set following values
+  # Is master branch in upstream repository synced?
+  master_checker: "True"
+  # (Optional) Branch name which is used for sync
+  upstream_branch_name: "master"
+  # (Optional) Path to directory with dockerfile withing upstream repository
+  upstream_git_path: "2.4"
+
+# In case you want to sync upstream pull request opened against master branch set following values
+  # Should pull requests be synced?
+  pr_checker: 'True'
+  # Github comment message to enforce sync of a pull request
+  pr_comment_message: "[test]"
+
+# In case you need to transform code during upstream2downstream sync, use generator image
+  # (Optional) Specify URL to an image used for source generation.
+  image_url: "docker.io/usercont/dist-git-generator"
