@@ -1,35 +1,69 @@
 #!/usr/bin/env python3
 
 import copy
+from functools import lru_cache
 import json
 import jsonschema
 import logging
+from os import getenv
 from pathlib import Path
 import requests
 import sys
 import yaml
 
+BASE_PATH = Path(__file__).parent
+DATA_PATH = BASE_PATH / 'data'
+CONFIG_DIR = DATA_PATH / 'conf.d'
+DEFAULTS_PATH = DATA_PATH / 'defaults/conf-defaults-v1.yml'
+SCHEMA_PATH = DATA_PATH / 'schemas/bot-config-schema.json'
 
-BASE_PATH = Path(__file__).parent.parent
-DEFAULTS_PATH = BASE_PATH / 'frambo/data/defaults/conf-defaults-v1.yml'
-SCHEMA_PATH = BASE_PATH / 'frambo/data/schemas/bot-config-schema.json'
-# keys() == aliases to values(), we still support them, but want users to use values()
-# values() == config key names we want users to use
-BOT_CONF_KEYS_ALIASES = {'zdravomil': 'dockerfile-linter',
-                         'betka': 'upstream-to-downstream'}
-BOT_CONF_KEYS = set(BOT_CONF_KEYS_ALIASES.values())
+DEPLOYMENT = getenv('DEPLOYMENT')
+if not DEPLOYMENT:
+    raise ValueError("Please set DEPLOYMENT environment variable.")
 
 logger = logging.getLogger(__name__)
 
 
+@lru_cache(maxsize=4)
+def frambo_config(cfgdir=CONFIG_DIR):
+    """
+    Load & return frambo configuration from cfgdir.
+    :param cfgdir: pathlike
+    """
+    cfgfile = cfgdir / "config.yml"
+    logger.info(f"Loading frambo config: {cfgfile}")
+    config = yaml.safe_load(open(cfgfile))
+    if not config:
+        raise ValueError("No frambo config found")
+
+    for module, values in config.items():
+        # if it's list of entries, select the one whose 'deployment' == DEPLOYMENT
+        if isinstance(values, list):
+            for entry in values:
+                if 'deployment' not in entry:
+                    raise ValueError(f"No 'deployment' in {entry}")
+                if not isinstance(entry['deployment'], list):
+                    entry['deployment'] = [entry['deployment']]
+                if DEPLOYMENT in entry['deployment']:
+                    entry.pop('deployment')
+                    config[module] = entry
+                    break
+    return config
+
+
+def get_from_frambo_config(module, key):
+    value = frambo_config().get(module, {}).get(key)
+    if not value:
+        raise ValueError(f"{module}:{key} not set in {CONFIG_DIR / 'config.yml'}")
+    return value
+
+
+BOT_CONF_KEYS_ALIASES = get_from_frambo_config('config', 'bot-conf-keys-aliases')
+BOT_CONF_KEYS = set(BOT_CONF_KEYS_ALIASES.values())
+
+
 def alias2key(alias):
     return BOT_CONF_KEYS_ALIASES.get(alias, alias)
-
-
-def pretty_dict(report_dict):
-    result = json.dumps(report_dict, sort_keys=True, indent=4)
-    result = result.replace('\\n', '\n')
-    return result
 
 
 def dict_merge(into_dct, from_dct):
@@ -47,6 +81,12 @@ def dict_merge(into_dct, from_dct):
             dict_merge(into_dct[k], v)
         else:
             into_dct[k] = copy.deepcopy(v) if isinstance(v, dict) else v
+
+
+def pretty_dict(report_dict):
+    result = json.dumps(report_dict, sort_keys=True, indent=4)
+    result = result.replace('\\n', '\n')
+    return result
 
 
 def fetch_config(config_key, config_file_url):
@@ -73,7 +113,7 @@ def fetch_config(config_key, config_file_url):
 
 def load_configuration(conf_path=None, conf_str=None):
     # load defaults
-    result = yaml.load(Path(DEFAULTS_PATH).read_text())
+    result = yaml.safe_load(open(DEFAULTS_PATH))
     logger.debug(f"Default bots configuration: {pretty_dict(result)}")
 
     if conf_str and conf_path:
@@ -93,7 +133,7 @@ def load_configuration(conf_path=None, conf_str=None):
     # Some people keep putting tabs at the end of lines
     conf_str = conf_str.replace('\t\n', '\n')
 
-    repo_conf = yaml.load(conf_str)
+    repo_conf = yaml.safe_load(conf_str)
 
     for bot_key in repo_conf.keys():
         if alias2key(bot_key) not in BOT_CONF_KEYS.union({'version', 'global'}):
@@ -113,7 +153,7 @@ def load_configuration(conf_path=None, conf_str=None):
     dict_merge(into_dct=result, from_dct=repo_conf)
 
     # validate
-    jsonschema.validate(result, json.loads(Path(SCHEMA_PATH).read_text()))
+    jsonschema.validate(result, json.loads(SCHEMA_PATH.read_text()))
 
     logger.debug(f"Resulting bots configuration: {pretty_dict(result)}")
 

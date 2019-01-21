@@ -1,0 +1,11 @@
+emails:
+    sender: no@body
+    smtp_server: elm.street
+
+pagure:
+  - deployment: prod
+    host: prod
+  - deployment: test
+    host: test
+  - deployment: [stage, dev]
+    host: others

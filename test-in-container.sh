@@ -25,7 +25,7 @@ docker-compose up -d redis
 
 echo "Starting test suite"
 # To connect to redis started by docker-compose we have to specify
-FRAMBO_NET=$(docker network ls | grep upstream | awk '{ print $2 }')
+FRAMBO_NET=$(docker network ls | grep frambo | awk '{ print $2 }')
 # docker network and REDIS_SERVICE_HOST
 docker run --rm \
            --network ${FRAMBO_NET} \
