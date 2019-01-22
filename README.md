@@ -70,6 +70,14 @@ After running `make example-bot-run-task` you should see [one succeeded task the
 
 To check content of the redis instance there's redis-commander running on [http://localhost:8081](http://localhost:8081).
 
+#### Configuration
+
+Some parts of frambo, for example some urls, hostnames or bot names are configurable in [frambo/data/conf.d/config.yml](frambo/data/conf.d/config.yml) file.
+The config file should contain a dictionary where each item key is a module name
+and value can be either a dictionary or a list of dicts.
+If it's a list, then each item has to contain a 'deployment' and
+config parser will select item whose 'deployment' matches DEPLOYMENT environment variable value.
+
 #### How to implement new bot ?
 
 See [examples/bot/](./examples/bot/) directory for example bot implementation.

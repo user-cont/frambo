@@ -1,0 +1,17 @@
+config:
+  bot-conf-keys-aliases:
+    # keys() == aliases to values(), we still support them, but want users to use values()
+    # values() == config key names we want users to use
+    zdravomil: dockerfile-linter
+    betka: upstream-to-downstream
+
+emails:
+    sender: foo-bar@foobar.com
+    smtp_server: nobody.com
+
+pagure:
+  # list of settings, each one is for different (set of) deployment
+  - deployment: prod
+    host: pagure.io
+  - deployment: [stage, dev, test]
+    host: stg.pagure.io

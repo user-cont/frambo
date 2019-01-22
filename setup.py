@@ -21,5 +21,6 @@ setup(
     author='Usercont',
     author_email='user-cont-team@redhat.com',
     package_data={'frambo': [os.path.join('data', 'schemas', '*.json'),
-                             os.path.join('data', 'defaults', '*.json')]},
+                             os.path.join('data', 'conf.d', '*.yml'),
+                             os.path.join('data', 'defaults', '*.yml')]},
 )
