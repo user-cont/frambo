@@ -15,6 +15,8 @@ gc() {
   docker-compose stop redis || :
   echo "Removing test containers"
   docker rm redis frambo_test_1 || :
+  echo "Removing docker network"
+  docker network rm "${FRAMBO_NET}" || :
   exit $retval
 }
 
