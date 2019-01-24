@@ -11,11 +11,12 @@ import requests
 import sys
 import yaml
 
+from frambo.schemas import BotCfg
+
 BASE_PATH = Path(__file__).parent
 DATA_PATH = BASE_PATH / 'data'
 CONFIG_DIR = DATA_PATH / 'conf.d'
 DEFAULTS_PATH = DATA_PATH / 'defaults/conf-defaults-v1.yml'
-SCHEMA_PATH = DATA_PATH / 'schemas/bot-config-schema.json'
 
 DEPLOYMENT = getenv('DEPLOYMENT')
 if not DEPLOYMENT:
@@ -153,7 +154,7 @@ def load_configuration(conf_path=None, conf_str=None):
     dict_merge(into_dct=result, from_dct=repo_conf)
 
     # validate
-    jsonschema.validate(result, json.loads(SCHEMA_PATH.read_text()))
+    jsonschema.validate(result, BotCfg.get_schema())
 
     logger.debug(f"Resulting bots configuration: {pretty_dict(result)}")
 

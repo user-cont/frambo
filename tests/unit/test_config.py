@@ -8,10 +8,6 @@ from frambo import config
 
 class TestConfig:
 
-    @pytest.fixture
-    def config_path(self):
-        return Path(__file__).parent.parent / "data/bot-cfg.yml"
-
     def test_dict_merge(self):
         dct = {
             'a': 1,
@@ -48,9 +44,14 @@ class TestConfig:
         assert dct['b']['b3'] == 5
         assert dct['c'] == 6
 
-    def test_load_configuration(self, config_path):
-        from_file = config.load_configuration(conf_path=config_path)
-        from_string = config.load_configuration(conf_str=config_path.read_text())
+    @pytest.mark.parametrize('bot_cfg_path', [
+        Path(__file__).parent.parent / "data/bot-configs/bot-cfg.yml",
+        Path(__file__).parent.parent / "data/bot-configs/bot-cfg-default.yml",
+        Path(__file__).parent.parent / "data/bot-configs/bot-cfg-old-keys.yml"
+    ])
+    def test_load_configuration(self, bot_cfg_path):
+        from_file = config.load_configuration(conf_path=bot_cfg_path)
+        from_string = config.load_configuration(conf_str=bot_cfg_path.read_text())
         assert from_file == from_string
 
         # no arguments -> default config
@@ -80,7 +81,6 @@ class TestConfig:
 
     @pytest.mark.parametrize('cfg_url', [
         'https://github.com/user-cont/frambo/raw/master/examples/cfg/bot-cfg.yml',
-        'https://github.com/user-cont/frambo/raw/master/tests/data/bot-cfg-old-keys.yml'
     ])
     def test_fetch_config(self, cfg_url):
         c1 = config.fetch_config('zdravomil', cfg_url)
