@@ -31,15 +31,15 @@ upstream-to-downstream:
 
 # In case you want to sync only what's in upstream branch, set following values
   # Is master branch in upstream repository synced?
-  master_checker: "True"
+  master_checker: true
   # (Optional) Branch name which is used for sync
   upstream_branch_name: "master"
   # (Optional) Path to directory with dockerfile withing upstream repository
   upstream_git_path: "2.4"
 
 # In case you want to sync upstream pull request opened against master branch set following values
-  # Should pull requests be synced?
-  pr_checker: 'True'
+  # (Optional) Should pull requests be synced?
+  pr_checker: true
   # Github comment message to enforce sync of a pull request
   pr_comment_message: "[test]"
 
