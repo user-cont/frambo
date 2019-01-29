@@ -12,7 +12,7 @@ class TestBot:
 
     @pytest.fixture
     def config_path(self):
-        return Path(__file__).parent.parent / "data/bot-cfg.yml"
+        return Path(__file__).parent.parent / "data/bot-configs/bot-cfg.yml"
 
     @pytest.fixture()
     def bot(self):
