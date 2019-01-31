@@ -115,7 +115,7 @@ def fetch_config(config_key, config_file_url):
 def load_configuration(conf_path=None, conf_str=None):
     # load defaults
     result = yaml.safe_load(open(DEFAULTS_PATH))
-    logger.debug(f"Default bots configuration: {pretty_dict(result)}")
+    # logger.debug(f"Default bots configuration: {pretty_dict(result)}")
 
     if conf_str and conf_path:
         raise AttributeError("Provided both forms of configuration."
@@ -149,6 +149,8 @@ def load_configuration(conf_path=None, conf_str=None):
         except AttributeError:
             # 'global' key has probably just some non-dict value like None or '', no need to raise
             logger.error(f"Wrong 'global' value: {repo_conf['global']}")
+    # 'global' has been merged into others, we don't need it anymore
+    repo_conf.pop('global', None)
 
     # overwrite defaults with values in bot configuration
     dict_merge(into_dct=result, from_dct=repo_conf)
