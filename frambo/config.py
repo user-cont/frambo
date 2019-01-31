@@ -149,6 +149,8 @@ def load_configuration(conf_path=None, conf_str=None):
         except AttributeError:
             # 'global' key has probably just some non-dict value like None or '', no need to raise
             logger.error(f"Wrong 'global' value: {repo_conf['global']}")
+    # 'global' has been merged into others, we don't need it anymore
+    repo_conf.pop('global', None)
 
     # overwrite defaults with values in bot configuration
     dict_merge(into_dct=result, from_dct=repo_conf)
