@@ -115,7 +115,7 @@ def fetch_config(config_key, config_file_url):
 def load_configuration(conf_path=None, conf_str=None):
     # load defaults
     result = yaml.safe_load(open(DEFAULTS_PATH))
-    logger.debug(f"Default bots configuration: {pretty_dict(result)}")
+    # logger.debug(f"Default bots configuration: {pretty_dict(result)}")
 
     if conf_str and conf_path:
         raise AttributeError("Provided both forms of configuration."
