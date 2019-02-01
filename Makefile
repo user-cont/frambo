@@ -1,4 +1,4 @@
-.PHONY: redis-start redis-stop example-bot-build example-bot-start example-bot-stop example-bot-run-task test test-build test-in-container image-build image-push clean
+.PHONY: redis-start redis-stop example-bot-build example-bot-start example-bot-stop example-bot-run-task test-build test-in-container image-build image-push clean
 
 IMAGE_NAME = docker.io/usercont/frambo
 TEST_IMAGE_NAME = frambo-tests
@@ -20,9 +20,6 @@ example-bot-stop:
 
 example-bot-run-task:
 	docker-compose exec example-bot python3 /tmp/example-bot/producer.py
-
-test:
-	PYTHONPATH=$(CURDIR) LOGS_DIR=/tmp DEPLOYMENT=test pytest --color=yes --verbose --showlocals
 
 test-build: image-build
 	docker build --tag ${TEST_IMAGE_NAME} -f Dockerfile.tests .
