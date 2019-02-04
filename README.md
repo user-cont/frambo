@@ -82,3 +82,13 @@ config parser will select item whose 'deployment' matches DEPLOYMENT environment
 
 See [examples/bot/](./examples/bot/) directory for example bot implementation.
 If you have any questions don't hesitate to ask and we'll update the documentation with answers.
+
+### Validation of `bot-cfg.yml`
+
+You can easily verify locally that `bot-cfg.yaml` for your repository is valid.
+
+```
+$ git clone https://github.com/user-cont/frambo
+$ cd frambo
+$ make validate-bot-cfg BOT_CFG_PATH=<PATH>
+```
