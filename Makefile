@@ -30,6 +30,10 @@ test-in-container: test-build
 image-build:
 	docker build --tag ${IMAGE_NAME} .
 
+validate-bot-cfg: image-build
+	docker run -it -v ${BOT_CFG_PATH}:/tmp/bot-cfg.yml:ro,Z \
+	${IMAGE_NAME} bash -c "DEPLOYMENT=dev python3 /tmp/frambo/frambo/config.py /tmp/bot-cfg.yml"
+
 image-push: image-build
 	docker push ${IMAGE_NAME}
 
