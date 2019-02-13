@@ -40,7 +40,8 @@ It's configured to use [Redis](https://redis.io) as
 
 #### How to test/play with it ?
 
-To test it locally start our example bot with `make example-bot-start`.
+We use `docker-compose`, so you have to install it first.
+To try Frambo locally, start our example bot with `make example-bot-start`.
 Run `make example-bot-build` before first run, `example-bot-start` doesn't depend on it to not rebuild with each tiny change.
 It starts one celery worker, listening on queue defined in [docker-compose.yml](docker-compose.yml).
 In other terminal verify that it works correctly by running `make example-bot-run-task`, which sends one task to the queue.
