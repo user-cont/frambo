@@ -16,9 +16,7 @@
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG
 
 from frambo.config import fetch_config, load_configuration
-from frambo.emails import send_email
 from frambo.logger import Logger
-from frambo.utils import text_from_template
 
 
 class Bot:

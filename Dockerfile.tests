@@ -3,4 +3,4 @@ FROM docker.io/usercont/frambo
 RUN cd /tmp/frambo && \
     pip3 install -r tests/requirements.txt
 
-CMD LOGS_DIR=/tmp DEPLOYMENT=test pytest --color=yes --verbose --showlocals /tmp/frambo/tests/
+CMD LOGS_DIR=/tmp DEPLOYMENT=test python3 -m pytest --color=yes --verbose --showlocals /tmp/frambo/tests/

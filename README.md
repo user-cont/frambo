@@ -38,29 +38,10 @@ It's configured to use [Redis](https://redis.io) as
 [broker](http://docs.celeryproject.org/en/latest/getting-started/brokers/redis.html) and
 [backend](http://docs.celeryproject.org/en/latest/userguide/configuration.html#conf-redis-result-backend)
 
-#### How to use pagure module in your bots
-
-Frambo provides couple variables from  [pagure.py](./frambo/pagure.py):
-* PAGURE_HOST ... which refers to `pagure.io` in case of `DEPLOYMENT=prod` or `stg.pagure.io` for other DEPLOYMENT values.
-This variable is mainly used for clonning repositories and execution `git` operations.
-* PAGURE_URL ... refers to `https://{PAGURE_HOST}/`
-
-In your bot, you can e.g. ask for username by code:
-```python
-import requests
-
-from frambo.fedora_pagure import PAGURE_URL
-
-url = f"{PAGURE_URL}/api/0/-/whoami"
-r = requests.post(url, headers={'Authorization': 'token {}'.format(pagure_api_token)})
-
-```
-
-where `pagure_api_token` taken from [token page](https://pagure.io/settings#nav-api-tab)
-
 #### How to test/play with it ?
 
-To test it locally start our example bot with `make example-bot-start`.
+We use `docker-compose`, so you have to install it first.
+To try Frambo locally, start our example bot with `make example-bot-start`.
 Run `make example-bot-build` before first run, `example-bot-start` doesn't depend on it to not rebuild with each tiny change.
 It starts one celery worker, listening on queue defined in [docker-compose.yml](docker-compose.yml).
 In other terminal verify that it works correctly by running `make example-bot-run-task`, which sends one task to the queue.
@@ -82,6 +63,25 @@ config parser will select item whose 'deployment' matches DEPLOYMENT environment
 
 See [examples/bot/](./examples/bot/) directory for example bot implementation.
 If you have any questions don't hesitate to ask and we'll update the documentation with answers.
+
+#### How to use pagure module in your bots
+
+Frambo provides couple variables from  [pagure.py](./frambo/pagure.py):
+* PAGURE_HOST ... used for clonning repositories and execution `git` operations
+* PAGURE_URL ... refers to `https://{PAGURE_HOST}/`
+
+In your bot, you can e.g. ask for username:
+
+```python
+import requests
+
+from frambo.fedora_pagure import PAGURE_URL
+
+url = f"{PAGURE_URL}/api/0/-/whoami"
+r = requests.post(url, headers={'Authorization': 'token {}'.format(pagure_api_token)})
+```
+
+where `pagure_api_token` is taken from [token page](https://pagure.io/settings#nav-api-tab)
 
 ### Validation of `bot-cfg.yml`
 
