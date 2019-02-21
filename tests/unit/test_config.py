@@ -68,16 +68,11 @@ class TestConfig:
             "version": "2",
             "zdravomil": {
                 "enabled": False
-            },
-            "upstream-to-downstream": {
-                "enabled": True,
-                "master_checker": True
             }
         }
         conf = config.load_configuration(conf_str=json.dumps(my))
         # our 'zdravomil' key has been merged into default's 'dockerfile-linter' key
         assert conf['dockerfile-linter']['enabled'] is False
-        assert conf['upstream-to-downstream']['enabled'] is True
 
     @pytest.mark.parametrize('cfg_url', [
         'https://github.com/user-cont/frambo/raw/master/examples/cfg/bot-cfg.yml',
