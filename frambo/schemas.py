@@ -31,6 +31,7 @@ class DockerfileLinter(Common):
     """
     https://github.com/user-cont/zdravomil
     """
+
     pass
 
 
@@ -38,6 +39,7 @@ class BotCfg(jsl.Document):
     """
     bot-cfg.yml
     """
+
     version = jsl.StringField()
     global_ = jsl.DocumentField(Common, name="global")
     dockerfile_linter = jsl.DocumentField(DockerfileLinter, name="dockerfile-linter")
@@ -45,4 +47,5 @@ class BotCfg(jsl.Document):
 
 if __name__ == "__main__":
     from pprint import pprint
+
     pprint(BotCfg.get_schema())

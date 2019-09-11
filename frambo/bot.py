@@ -71,9 +71,7 @@ class Bot:
         :param msg: message to log
         :param args: arguments to msg
         """
-        report_dict = {
-            'message': self.logger.format(msg, args)
-        }
+        report_dict = {"message": self.logger.format(msg, args)}
         self.logger.log(level, report_dict)
 
     def critical(self, msg, *args, **kwargs):
