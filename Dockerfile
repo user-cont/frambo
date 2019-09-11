@@ -1,6 +1,6 @@
 # Just a base image for bots, not supposed to be run on its own.
 
-FROM registry.fedoraproject.org/fedora:29
+FROM registry.fedoraproject.org/fedora:30
 
 ENV LANG=en_US.UTF-8
 
