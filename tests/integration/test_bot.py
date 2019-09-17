@@ -18,9 +18,7 @@ class TestBot:
     def bot(self):
         return Bot()
 
-    @pytest.mark.parametrize("key, result", [
-        ("dockerfile-linter", True),
-    ])
+    @pytest.mark.parametrize("key, result", [("dockerfile-linter", True)])
     def test_is_enabled(self, bot, config_path, key, result):
         flexmock(bot, cfg_key=key)
         assert bot.is_enabled(config_path=config_path) == result

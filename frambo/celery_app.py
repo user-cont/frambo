@@ -21,7 +21,7 @@ from raven.contrib.celery import register_signal, register_logger_signal
 
 
 def configure_sentry(dsn=None):
-    dsn = dsn or getenv('SENTRY_DSN')
+    dsn = dsn or getenv("SENTRY_DSN")
     if not dsn:
         return
 
@@ -40,15 +40,15 @@ def celery_app(include=None):
     you don't need to specify anything in 'include'. But if the xyz is a package then you need to
     specify all modules from the package here.
     """
-    redis_host = getenv('REDIS_SERVICE_HOST', 'redis')
-    redis_port = getenv('REDIS_SERVICE_PORT', '6379')
-    redis_db = getenv('REDIS_SERVICE_DB', '0')
-    redis_url = "redis://{host}:{port}/{db}".format(host=redis_host, port=redis_port, db=redis_db)
+    redis_host = getenv("REDIS_SERVICE_HOST", "redis")
+    redis_port = getenv("REDIS_SERVICE_PORT", "6379")
+    redis_db = getenv("REDIS_SERVICE_DB", "0")
+    redis_url = "redis://{host}:{port}/{db}".format(
+        host=redis_host, port=redis_port, db=redis_db
+    )
 
     # http://docs.celeryproject.org/en/latest/reference/celery.html#celery.Celery
-    return Celery(backend=redis_url,
-                  broker=redis_url,
-                  include=include)
+    return Celery(backend=redis_url, broker=redis_url, include=include)
 
 
 app = celery_app()

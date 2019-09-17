@@ -7,8 +7,8 @@ from email.mime.text import MIMEText
 from frambo.config import get_from_frambo_config
 from frambo.utils import text_from_template
 
-SENDER = get_from_frambo_config('emails', 'sender')
-SMTP_SERVER = get_from_frambo_config('emails', 'smtp_server')
+SENDER = get_from_frambo_config("emails", "sender")
+SMTP_SERVER = get_from_frambo_config("emails", "smtp_server")
 
 logger = getLogger(__name__)
 
@@ -27,16 +27,16 @@ def send_email(text, receivers, subject, sender=SENDER, smtp_server=SMTP_SERVER)
     :param sender: string, sender email
     :param smtp_server: string, smtp server hostname
     """
-    logger.info('Sending email to: %s', str(receivers))
+    logger.info("Sending email to: %s", str(receivers))
 
     msg = MIMEMultipart()
-    msg['From'] = sender
-    msg['To'] = COMMASPACE.join(receivers)
-    msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = subject
+    msg["From"] = sender
+    msg["To"] = COMMASPACE.join(receivers)
+    msg["Date"] = formatdate(localtime=True)
+    msg["Subject"] = subject
     msg.attach(MIMEText(text))
 
     smtp = SMTP(smtp_server)
     smtp.sendmail(sender, receivers, msg.as_string())
     smtp.close()
-    logger.debug('Email sent')
+    logger.debug("Email sent")

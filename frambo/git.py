@@ -38,7 +38,7 @@ class Git(object):
         if msg:
             logger.info(msg)
 
-        command = 'git'
+        command = "git"
         # use git_dir as work-tree git parameter and git-dir parameter (with added git.postfix)
         if git_dir:
             command += f" --git-dir {git_dir}/.git"
@@ -75,36 +75,38 @@ class Git(object):
             return None
 
         # transform 4-6 to a URL-like string, so that we can handle it together with 1-3
-        if '@' in potential_url:
-            split = potential_url.split('@')
+        if "@" in potential_url:
+            split = potential_url.split("@")
             if len(split) == 2:
-                potential_url = 'http://' + split[1]
+                potential_url = "http://" + split[1]
             else:
                 # more @s ?
                 return None
 
         # make it parsable by urlparse if it doesn't contain scheme
-        if not potential_url.startswith(('http://', 'https://', 'git://', 'git+https://')):
-            potential_url = 'http://' + potential_url
+        if not potential_url.startswith(
+            ("http://", "https://", "git://", "git+https://")
+        ):
+            potential_url = "http://" + potential_url
 
         # urlparse should handle it now
         parsed = urlparse(potential_url)
 
         username = None
-        if ':' in parsed.netloc:
+        if ":" in parsed.netloc:
             # e.g. domain.com:foo or domain.com:1234, where foo is username, but 1234 is port number
-            split = parsed.netloc.split(':')
+            split = parsed.netloc.split(":")
             if split[1] and not split[1].isnumeric():
                 username = split[1]
 
         # path starts with '/', strip it away
-        path = parsed.path.lstrip('/')
+        path = parsed.path.lstrip("/")
 
         # strip trailing '.git'
-        if path.endswith('.git'):
-            path = path[:-len('.git')]
+        if path.endswith(".git"):
+            path = path[: -len(".git")]
 
-        split = path.split('/')
+        split = path.split("/")
         if username and len(split) == 1:
             # path contains only reponame, we got username earlier
             return username, path
@@ -130,7 +132,7 @@ class Git(object):
     @staticmethod
     def strip_dot_git(url):
         """Strip trailing .git"""
-        return url[:-len('.git')] if url.endswith('.git') else url
+        return url[: -len(".git")] if url.endswith(".git") else url
 
     @staticmethod
     def create_dot_gitconfig(user_name, user_email):
@@ -146,4 +148,4 @@ class Git(object):
 [remote "origin"]
 \tfetch = +refs/pull/*/head:refs/remotes/origin/pr/*
 """
-        (Path.home() / '.gitconfig').write_text(content)
+        (Path.home() / ".gitconfig").write_text(content)

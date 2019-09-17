@@ -40,8 +40,8 @@ class FooBarBot(Bot):
         :param args: arguments to msg
         """
         report_dict = {
-            'message': self.logger.format(msg, args),
-            'tmpdir': self.tmpdir.name,
-            'tmpfile': self.tmpfile
+            "message": self.logger.format(msg, args),
+            "tmpdir": self.tmpdir.name,
+            "tmpfile": self.tmpfile,
         }
         self.logger.log(level, report_dict)

@@ -27,8 +27,14 @@ class Logger(object):
      - writing json to file
     """
 
-    def __init__(self, task_name, level=logging.NOTSET,
-                 to_file=True, file_path=None, additional=None):
+    def __init__(
+        self,
+        task_name,
+        level=logging.NOTSET,
+        to_file=True,
+        file_path=None,
+        additional=None,
+    ):
         """
         Initialize.
 
@@ -39,7 +45,9 @@ class Logger(object):
         :param additional: additional string to include in log file name
         """
         self.task_name = task_name
-        self.logger = get_task_logger(task_name) if task_name else logging.getLogger(__name__)
+        self.logger = (
+            get_task_logger(task_name) if task_name else logging.getLogger(__name__)
+        )
         self.logger.setLevel(level)
         self.log_file = None
 
@@ -52,7 +60,9 @@ class Logger(object):
                 if additional:
                     raise ValueError("file_path and additional can't be both defined")
                 if not os.path.isdir(os.path.dirname(file_path)):
-                    self.logger.error("{} is not a directory".format(os.path.dirname(file_path)))
+                    self.logger.error(
+                        "{} is not a directory".format(os.path.dirname(file_path))
+                    )
                     return
             else:  # file_path not specified, will log to default location
                 try:
@@ -73,15 +83,20 @@ class Logger(object):
         :param date: include date (YMD) in log file name
         :returns if both additional and date then /var/log/bots/{task}-{additional}.log-{date}
         """
-        logs_dir = os.getenv('LOGS_DIR') or '/var/log/bots'
+        logs_dir = os.getenv("LOGS_DIR") or "/var/log/bots"
         if not os.path.isdir(logs_dir):
             raise RuntimeError("{} is not a directory".format(logs_dir))
 
-        return "{dir}/{task}{additional}.log{date}"\
-            .format(dir=logs_dir,
-                    task=self.task_name,
-                    additional='-' + additional if additional else "",
-                    date='-' + datetime.now().strftime("%Y%m%d")) if date else ""
+        return (
+            "{dir}/{task}{additional}.log{date}".format(
+                dir=logs_dir,
+                task=self.task_name,
+                additional="-" + additional if additional else "",
+                date="-" + datetime.now().strftime("%Y%m%d"),
+            )
+            if date
+            else ""
+        )
 
     @staticmethod
     def format(msg, args):
@@ -121,12 +136,14 @@ class Logger(object):
         :param report_dict: dictionary to be logged
         :return:
         """
-        report_dict.update({
-            'level': logging.getLevelName(level),
-            'task': self.task_name,
-            'time': str(datetime.utcnow()),
-        })
+        report_dict.update(
+            {
+                "level": logging.getLevelName(level),
+                "task": self.task_name,
+                "time": str(datetime.utcnow()),
+            }
+        )
         serialized = json.dumps(report_dict, sort_keys=True, indent=2)
         # HACK: Pretty print newlines in values - strings. Feel free to fix it if you know better.
-        serialized = serialized.replace('\\n', '\n')
+        serialized = serialized.replace("\\n", "\n")
         return serialized

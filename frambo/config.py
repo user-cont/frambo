@@ -14,11 +14,11 @@ import yaml
 from frambo.schemas import BotCfg
 
 BASE_PATH = Path(__file__).parent
-DATA_PATH = BASE_PATH / 'data'
-CONFIG_DIR = DATA_PATH / 'conf.d'
-DEFAULTS_PATH = DATA_PATH / 'defaults/conf-defaults-v1.yml'
+DATA_PATH = BASE_PATH / "data"
+CONFIG_DIR = DATA_PATH / "conf.d"
+DEFAULTS_PATH = DATA_PATH / "defaults/conf-defaults-v1.yml"
 
-DEPLOYMENT = getenv('DEPLOYMENT')
+DEPLOYMENT = getenv("DEPLOYMENT")
 if not DEPLOYMENT:
     raise ValueError("Please set DEPLOYMENT environment variable.")
 
@@ -41,12 +41,12 @@ def frambo_config(cfgdir=CONFIG_DIR):
         # if it's list of entries, select the one whose 'deployment' == DEPLOYMENT
         if isinstance(values, list):
             for entry in values:
-                if 'deployment' not in entry:
+                if "deployment" not in entry:
                     raise ValueError(f"No 'deployment' in {entry}")
-                if not isinstance(entry['deployment'], list):
-                    entry['deployment'] = [entry['deployment']]
-                if DEPLOYMENT in entry['deployment']:
-                    entry.pop('deployment')
+                if not isinstance(entry["deployment"], list):
+                    entry["deployment"] = [entry["deployment"]]
+                if DEPLOYMENT in entry["deployment"]:
+                    entry.pop("deployment")
                     config[module] = entry
                     break
     return config
@@ -59,7 +59,7 @@ def get_from_frambo_config(module, key):
     return value
 
 
-BOT_CONF_KEYS_ALIASES = get_from_frambo_config('config', 'bot-conf-keys-aliases')
+BOT_CONF_KEYS_ALIASES = get_from_frambo_config("config", "bot-conf-keys-aliases")
 BOT_CONF_KEYS = set(BOT_CONF_KEYS_ALIASES.values())
 
 
@@ -86,27 +86,33 @@ def dict_merge(into_dct, from_dct):
 
 def pretty_dict(report_dict):
     result = json.dumps(report_dict, sort_keys=True, indent=4)
-    result = result.replace('\\n', '\n')
+    result = result.replace("\\n", "\n")
     return result
 
 
 def fetch_config(config_key, config_file_url):
     if not config_key:
-        raise AttributeError("No configuration key."
-                             "You probably need to set bot_cfg attribute in your bot.")
+        raise AttributeError(
+            "No configuration key."
+            "You probably need to set bot_cfg attribute in your bot."
+        )
     if alias2key(config_key) not in BOT_CONF_KEYS:
-        raise AttributeError(f"Unknown bot configuration key {config_key!r}."
-                             f"Supported are: {BOT_CONF_KEYS}.")
+        raise AttributeError(
+            f"Unknown bot configuration key {config_key!r}."
+            f"Supported are: {BOT_CONF_KEYS}."
+        )
 
-    bots_config = ''
+    bots_config = ""
     logger.info(f"Pulling config file: {config_file_url}")
-    r = requests.get(config_file_url, cookies={'pagure': 'user-cont-bot-cfg-load'})
+    r = requests.get(config_file_url, cookies={"pagure": "user-cont-bot-cfg-load"})
     if r.status_code == 200:
         bots_config = r.text
-        logger.debug('Bot configuration fetched')
+        logger.debug("Bot configuration fetched")
     else:
-        logger.warning(f"Config file not found in url: {config_file_url}, "
-                       "using default configuration.")
+        logger.warning(
+            f"Config file not found in url: {config_file_url}, "
+            "using default configuration."
+        )
 
     conf_with_defaults = load_configuration(conf_str=bots_config)
     return conf_with_defaults[alias2key(config_key)]
@@ -118,12 +124,14 @@ def load_configuration(conf_path=None, conf_str=None):
     # logger.debug(f"Default bots configuration: {pretty_dict(result)}")
 
     if conf_str and conf_path:
-        raise AttributeError("Provided both forms of configuration."
-                             "Use only conf_path or only conf_str")
+        raise AttributeError(
+            "Provided both forms of configuration."
+            "Use only conf_path or only conf_str"
+        )
 
     if not (conf_str or conf_path):
         # none provided, return default config
-        logger.info('No config provided, using default')
+        logger.info("No config provided, using default")
         return result
 
     if conf_path:
@@ -132,25 +140,28 @@ def load_configuration(conf_path=None, conf_str=None):
         conf_str = Path(conf_path).read_text()
 
     # Some people keep putting tabs at the end of lines
-    conf_str = conf_str.replace('\t\n', '\n')
+    conf_str = conf_str.replace("\t\n", "\n")
 
     repo_conf = yaml.safe_load(conf_str)
 
     for bot_key in repo_conf.keys():
-        if alias2key(bot_key) not in BOT_CONF_KEYS.union({'version', 'global'}):
-            logger.warning(f"Provided unsupported key value: {bot_key}. "
-                           f"Supported are: {BOT_CONF_KEYS}.")
+        if alias2key(bot_key) not in BOT_CONF_KEYS.union({"version", "global"}):
+            logger.warning(
+                f"Provided unsupported key value: {bot_key}. "
+                f"Supported are: {BOT_CONF_KEYS}."
+            )
 
     # fill global values
     for key in BOT_CONF_KEYS:
         try:
-            dict_merge(into_dct=result.get(key, {}),
-                       from_dct=repo_conf.get('global', {}))
+            dict_merge(
+                into_dct=result.get(key, {}), from_dct=repo_conf.get("global", {})
+            )
         except AttributeError:
             # 'global' key has probably just some non-dict value like None or '', no need to raise
             logger.error(f"Wrong 'global' value: {repo_conf['global']}")
     # 'global' has been merged into others, we don't need it anymore
-    repo_conf.pop('global', None)
+    repo_conf.pop("global", None)
 
     # overwrite defaults with values in bot configuration
     dict_merge(into_dct=result, from_dct=repo_conf)
@@ -163,10 +174,10 @@ def load_configuration(conf_path=None, conf_str=None):
     return result
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     handler = logging.StreamHandler(sys.stderr)
     handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     logger.setLevel(logging.DEBUG)

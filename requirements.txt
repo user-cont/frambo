@@ -1,10 +1,9 @@
 anymarkup
-celery[eventlet,gevent]
+celery[redis,eventlet,gevent]
 jinja2
 jsl
 jsonschema
 pyyaml
 python-qpid-proton
 raven
-redis
 requests
