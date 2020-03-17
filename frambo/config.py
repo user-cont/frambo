@@ -11,6 +11,8 @@ import requests
 import sys
 import yaml
 
+from typing import Any
+
 from frambo.schemas import BotCfg
 
 BASE_PATH = Path(__file__).parent
@@ -52,11 +54,16 @@ def frambo_config(cfgdir=CONFIG_DIR):
     return config
 
 
-def get_from_frambo_config(module, key):
-    value = frambo_config().get(module, {}).get(key)
-    if not value:
+def get_from_frambo_config(
+    module: str,
+    key: str,
+    default: Any = "",
+    raises: bool = True,
+) -> Any:
+
+    if key not in frambo_config().get(module, {}) and raises:
         raise ValueError(f"{module}:{key} not set in {CONFIG_DIR / 'config.yml'}")
-    return value
+    return frambo_config().get(module, {}).get(key, default)
 
 
 BOT_CONF_KEYS_ALIASES = get_from_frambo_config("config", "bot-conf-keys-aliases")
