@@ -59,7 +59,7 @@ def get_from_frambo_config(
     key: str,
     default: Any = "",
     raises: bool = True,
-) -> str:
+) -> Any:
 
     if key not in frambo_config().get(module, {}) and raises:
         raise ValueError(f"{module}:{key} not set in {CONFIG_DIR / 'config.yml'}")
