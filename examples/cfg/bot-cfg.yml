@@ -19,3 +19,26 @@ dockerfile-linter:
   # optional
   notifications:
     email_addresses: [jozko@mrkvicka.com]
+
+# Syncing Upstream repository into Downstream repository
+# https://github.com/sclorg/betka
+upstream-to-downstream:
+  enabled: true
+
+  # optional
+  notifications:
+    email_addresses: [phracek@redhat.com]
+
+  # Specify if master branch in upstream repository is synced
+  master_checker: true
+  # Should pull requests be synced?
+  # optional
+  pr_checker: false
+  # Either 'upstream_branch_name' or 'upstream_git_path' has to be specified
+  # Branch name which is used for sync
+  upstream_branch_name: master
+  # Path to directory with dockerfile withing upstream repository
+  upstream_git_path: core
+  # Github comment message to enforce sync of a pull request
+  # required if pr_checker is true otherwise optional
+  pr_comment_message: "[test]"

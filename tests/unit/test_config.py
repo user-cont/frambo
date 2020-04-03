@@ -48,10 +48,15 @@ class TestConfig:
             config.load_configuration(conf_path="/does/not/exist")
 
     def test_load_configuration_with_aliases(self):
-        my = {"version": "2", "zdravomil": {"enabled": False}}
+        my = {
+            "version": "2",
+            "zdravomil": {"enabled": False},
+            "betka": {"enabled": False},
+        }
         conf = config.load_configuration(conf_str=json.dumps(my))
         # our 'zdravomil' key has been merged into default's 'dockerfile-linter' key
         assert conf["dockerfile-linter"]["enabled"] is False
+        assert conf["upstream-to-downstream"]["enabled"] is False
 
     @pytest.mark.parametrize(
         "cfg_url",
@@ -60,9 +65,13 @@ class TestConfig:
     def test_fetch_config(self, cfg_url):
         c1 = config.fetch_config("zdravomil", cfg_url)
         c2 = config.fetch_config("dockerfile-linter", cfg_url)
+        c3 = config.fetch_config("betka", cfg_url)
+        c4 = config.fetch_config("upstream-to-downstream", cfg_url)
         assert c1 == c2
         # make sure the 'global' key has been merged into all bots` keys
         assert "notifications" in c1
+        assert c3 == c4
+        assert "notifications" in c3
 
     def test_get_from_frambo_config(self):
         assert config.get_from_frambo_config("emails", "sender")

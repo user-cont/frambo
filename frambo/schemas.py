@@ -35,6 +35,20 @@ class DockerfileLinter(Common):
     pass
 
 
+class UpstreamToDownstream(Common):
+    """
+    https://github.com/sclorg/betka
+    """
+
+    master_checker = jsl.BooleanField()
+    upstream_branch_name = jsl.StringField()
+    upstream_git_path = jsl.StringField()
+    pr_checker = jsl.BooleanField()
+    pr_comment_message = jsl.StringField()
+    jira_ticket = jsl.StringField()
+    image_url = jsl.UriField()
+
+
 class BotCfg(jsl.Document):
     """
     bot-cfg.yml
@@ -43,6 +57,9 @@ class BotCfg(jsl.Document):
     version = jsl.StringField()
     global_ = jsl.DocumentField(Common, name="global")
     dockerfile_linter = jsl.DocumentField(DockerfileLinter, name="dockerfile-linter")
+    upstream_to_downstream = jsl.DocumentField(
+        UpstreamToDownstream, name="upstream-to-downstream"
+    )
 
 
 if __name__ == "__main__":

@@ -2,4 +2,7 @@ dockerfile-linter:
   enabled: true
 
 upstream-from-downstream:
+  enabled: true
+
+bugzilla:
   enabled: false
