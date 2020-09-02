@@ -34,7 +34,7 @@ class Bot:
         :param logger: if a Bot (subclass) instance wants to use differently configured Logger
         :param task_name: str, for logging purposes, name of task which created this Bot instance
         """
-        self.logger = logger or Logger(task_name=task_name, level=DEBUG)
+        self.logger = logger or Logger(task_name=task_name, level=DEBUG, to_file=False)
         self.config = None
 
     def is_enabled(self, config_url=None, config_path=None):
